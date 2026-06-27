@@ -3,7 +3,9 @@ package com.microservices.reviewms.review.message;
 import com.microservices.reviewms.review.Review;
 import com.microservices.reviewms.review.dto.ReviewMessage;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ReviewMessageProducer {
 
     private final RabbitTemplate rabbitTemplate;

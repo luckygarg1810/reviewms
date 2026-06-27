@@ -1,5 +1,6 @@
 package com.microservices.reviewms.review;
 
+import com.microservices.reviewms.review.message.ReviewMessageProducer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,8 +11,10 @@ import java.util.List;
 public class ReviewController {
 
     private final ReviewService reviewService;
-    public ReviewController(ReviewService reviewService){
+    private final ReviewMessageProducer reviewMessageProducer;
+    public ReviewController(ReviewService reviewService, ReviewMessageProducer reviewMessageProducer) {
         this.reviewService = reviewService;
+        this.reviewMessageProducer = reviewMessageProducer;
     }
 
     @GetMapping
@@ -22,6 +25,7 @@ public class ReviewController {
     @PostMapping
     public ResponseEntity<String> createReview(@RequestBody Review review, @RequestParam Long companyId){
         if(reviewService.createReview(review, companyId)){
+            reviewMessageProducer.sendMessage(review);
             return ResponseEntity.ok("Review added successfully");
         }else{
             return ResponseEntity.notFound().build();
